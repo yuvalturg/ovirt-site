@@ -343,7 +343,7 @@ configure :build do
 
   # Force a browser reload for new content by using
   # asset_hash or cache buster (but not both)
-  activate :cache_buster
+  # activate :cache_buster
   # activate :asset_hash
 
   # Use relative URLs for all assets
