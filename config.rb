@@ -279,8 +279,10 @@ helpers do
 
       result = _link_to(*args, &block)
 
-    rescue
+    rescue Exception => e  
       puts "WARNING: #{current_file}: Issue with link to '#{args[1]}'"
+      puts e.message
+      #puts e.backtrace.inspect
       return "<span class='broken-link link-error' data-href='#{url}' title='Broken link: original pointed to: #{url}'>#{args.first}</span>"
     end
 
