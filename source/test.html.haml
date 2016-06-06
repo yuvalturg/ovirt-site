@@ -2,10 +2,28 @@ Hello there!
 
 :ruby
   searchkey = 'OvfOnAnyDomain'
-  searchkey = 'OvfOnWantedDomains#summary'
+  searchkey = 'OvfOnAnyDomain'
+  #searchkey = 'OvfOnWantedDomains#summary'
   #searchkey = 'API'
   #searchkey = 'about ovirt'
 
-= find_wiki_page(searchkey)
+%pre= find_wiki_page(searchkey)
 
 = link_to 'hello', '/develop/release-management/features/storage/importstoragedomain/#Work_flow_for_Import_File_Storage_Domain_-_UI_flow'
+
+%pre= find_wiki_page('Features/UIPlugins')
+%pre= find_wiki_page('Features/UIPlugins#test')
+%pre= find_wiki_page('OvfOnWantedDomains#summary')
+
+:ruby
+  extra = /[#\?].*/
+  url_extra = searchkey.match(extra).to_s
+  url_fixed = searchkey.tr('_', ' ').gsub(url_extra, '')
+
+  match_redir = load_redirects.select do |redir|
+    redir[:to].downcase if redir[:from].match(/(^|\/)#{url_fixed}$/i)
+    #redir[:to].downcase if redir[:from].end_with? "#{url_fixed.downcase}"
+  end
+
+%pre= match_redir
+%pre= load_redirects.to_yaml
