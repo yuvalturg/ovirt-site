@@ -23,19 +23,25 @@ class WikiHelpers < Middleman::Extension
     end
 
     def find_wiki_page(searchkey)
-      searchkey.sub!(/^ /, '#') # Weird wiki-ism
+      searchkey.sub!(/^ /, '#') # Handle a weird wiki-ism (space for hashes?)
 
+      # Regular expression to grab the extra bits at the end of a URL
       extra = /[#\?].*/
+
+      # The extra stuff at the end of a URL,
+      # reformatted to use new hashes
       url_extra = searchkey
                   .match(extra).to_s
                   .tr('_', '-').tr(' ', '-')
                   .downcase.squeeze('-')
 
+      # The URL fragment, cleaned up and modified
       url_fixed = searchkey
                   .sub(extra, '').tr('_', ' ')
                   .gsub(/^\/|\/$/, '')
                   .downcase
 
+      # Processed redirects, filtered to requested page
       match_redir = load_redirects.map do |redir|
         next if url_fixed.empty?
 
@@ -45,6 +51,7 @@ class WikiHelpers < Middleman::Extension
         redir[:to].downcase.tr('_', ' ') if exact_match || page_match
       end.compact
 
+      # Find the matching page throughout the iste
       result = sitemap.resources.select do |resource|
         next unless resource.data.wiki_title
 
@@ -56,6 +63,7 @@ class WikiHelpers < Middleman::Extension
         # Handle redirects
         matches ||= match_redir.include? wiki_title
 
+        # Return true if it matches, else it's false
         matches
       end
 
