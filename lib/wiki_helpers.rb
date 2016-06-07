@@ -81,7 +81,7 @@ class WikiHelpers < Middleman::Extension
         matches
       end.map do |resource|
         resource.url + url_extra
-      end.first
+      end.last
 
       # puts "END #{result}"
 
