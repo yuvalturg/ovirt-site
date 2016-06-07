@@ -28,8 +28,8 @@ class WikiHelpers < Middleman::Extension
       extra = /[#\?].*/
       url_extra = searchkey
                   .match(extra).to_s
-                  #.tr('_', '-').tr(' ', '-')
-                  #.downcase.squeeze('-')
+                  .tr('_', '-').tr(' ', '-')
+                  .downcase.squeeze('-')
 
       url_fixed = searchkey
                   .sub(extra, '').tr('_', ' ')
