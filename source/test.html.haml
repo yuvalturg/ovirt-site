@@ -11,9 +11,12 @@ Hello there!
 
 = link_to 'hello', '/develop/release-management/features/storage/importstoragedomain/#Work_flow_for_Import_File_Storage_Domain_-_UI_flow'
 
-%pre= find_wiki_page('Features/UIPlugins')
-%pre= find_wiki_page('Features/UIPlugins#test')
-%pre= find_wiki_page('OvfOnWantedDomains#summary')
+- %w(/ Features/UIPlugins Features/UIPlugins#test OvfOnWantedDomains#summary recording_video adding_a_soundtrack AAA_JDBC Features/AAA_JDBC Features/AAA_JDBC#Password_management Summer_of_Code Summer_of_Code#oVirt_Ideas_for_Google_Summer_of_Code_2014 Workshop_Mar_2012_-_coordinator_notes#Generic_text_sent_when_mass-subscribing_to_workshop_list).each do |key|
+  %h2= key
+  %pre
+    = find_wiki_page(key)
+    = link_to(key, key)
+%hr
 
 :ruby
   extra = /[#\?].*/
@@ -23,7 +26,7 @@ Hello there!
   match_redir = load_redirects.select do |redir|
     redir[:to].downcase if redir[:from].match(/(^|\/)#{url_fixed}$/i)
     #redir[:to].downcase if redir[:from].end_with? "#{url_fixed.downcase}"
-  end
+  end ||u
 
 %pre= match_redir
 %pre= load_redirects.to_yaml
