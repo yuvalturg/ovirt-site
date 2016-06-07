@@ -44,9 +44,11 @@ class WikiHelpers < Middleman::Extension
 
       match_redir = load_redirects.map do |redir|
         next if url_fixed.empty?
-        if redir[:from].downcase == url_fixed || redir[:from].downcase.end_with?("/#{url_fixed}")
-          redir[:to].downcase.tr('_', ' ')
-        end
+
+        exact_match = redir[:from].downcase == url_fixed
+        page_match = redir[:from].downcase.end_with?("/#{url_fixed}")
+
+        redir[:to].downcase.tr('_', ' ') if exact_match || page_match
       end.compact
 
       result = sitemap.resources.select do |resource|
@@ -76,7 +78,7 @@ class WikiHelpers < Middleman::Extension
         # Handle redirects
         matches ||= match_redir.include? wiki_title
 
-        puts "RURL #{searchkey}: #{resource.url} - #{wiki_title} - #{url_fixed}" if matches
+        # puts "RURL #{searchkey}: #{resource.url} - #{wiki_title} - #{url_fixed}" if matches
 
         # puts "inc: " + match_redir.join(" :: ") if matches
 
