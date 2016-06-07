@@ -23,8 +23,6 @@ class WikiHelpers < Middleman::Extension
     end
 
     def find_wiki_page(searchkey)
-      # puts "KEY #{searchkey}"
-      #searchkey.strip!
       searchkey.sub!(/^ /, '#') # Weird wiki-ism
 
       extra = /[#\?].*/
@@ -37,10 +35,6 @@ class WikiHelpers < Middleman::Extension
                   .sub(extra, '').tr('_', ' ')
                   .gsub(/^\/|\/$/, '')
                   .downcase
-
-      #searchkey.gsub!(extra, '')
-      #
-      # puts url_fixed
 
       match_redir = load_redirects.map do |redir|
         next if url_fixed.empty?
@@ -59,39 +53,14 @@ class WikiHelpers < Middleman::Extension
         # Check direct matches
         matches ||= wiki_title == url_fixed
 
-        # Look for features
-        #matches ||= resource.data.feature_name.to_s.tr('_', ' ').downcase == url_fixed.tr('_', ' ').downcase
-        # matches ||= wiki_title == "#{url_fixed.downcase}"
-
-        # Handle redirects
-        #matches ||= match_redir.select do |redir|
-          #if searchkey == '/'
-            #puts "#{wiki_title} == #{redir[:to].to_s.downcase}" if wiki_title == redir[:to].to_s.downcase
-          #end
-          #wiki_title == redir.to_s.downcase
-        #end.count > 0
-
-        #matches ||= match_redir.include? url_fixed
-        #matches ||= match_redir.include? wiki_title.scan(/[^\/]*$/)
-        #matches ||= match_redir.include? "features/#{wiki_title}".downcase
-
         # Handle redirects
         matches ||= match_redir.include? wiki_title
-
-        # puts "RURL #{searchkey}: #{resource.url} - #{wiki_title} - #{url_fixed}" if matches
-
-        # puts "inc: " + match_redir.join(" :: ") if matches
 
         matches
       end
 
-      # puts "END #{result}"
-      #
-      p result.map { |p| p.url } if result.count > 1
-
-      result.map do |resource|
-        resource.url + url_extra
-      end.last
+      # Return the URL with the extra hash
+      result.map { |resource| resource.url + url_extra }.last
     end
   end
 end
