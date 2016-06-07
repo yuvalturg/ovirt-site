@@ -13,7 +13,7 @@ class WikiHelpers < Middleman::Extension
       redirects = File.readlines "#{root}/#{source}/redirects.yaml"
 
       $helper_wiki_redirects ||= redirects.map do |line|
-        splits = line.split(':')
+        splits = line.split(': ')
 
         {
           from: splits.first.gsub(slashes, '').strip,
@@ -30,8 +30,8 @@ class WikiHelpers < Middleman::Extension
       extra = /[#\?].*/
       url_extra = searchkey
                   .match(extra).to_s
-                  .tr('_', '-').tr(' ', '-')
-                  .downcase.squeeze('-')
+                  #.tr('_', '-').tr(' ', '-')
+                  #.downcase.squeeze('-')
 
       url_fixed = searchkey
                   .sub(extra, '').tr('_', ' ')
@@ -44,7 +44,7 @@ class WikiHelpers < Middleman::Extension
 
       match_redir = load_redirects.map do |redir|
         next if url_fixed.empty?
-        if redir[:from].downcase.end_with? url_fixed.downcase
+        if redir[:from].downcase == url_fixed || redir[:from].downcase.end_with?("/#{url_fixed}")
           redir[:to].downcase.tr('_', ' ')
         end
       end.compact
@@ -76,16 +76,20 @@ class WikiHelpers < Middleman::Extension
         # Handle redirects
         matches ||= match_redir.include? wiki_title
 
+        puts "RURL #{searchkey}: #{resource.url} - #{wiki_title} - #{url_fixed}" if matches
+
         # puts "inc: " + match_redir.join(" :: ") if matches
 
         matches
-      end.map do |resource|
-        resource.url + url_extra
-      end.last
+      end
 
       # puts "END #{result}"
+      #
+      p result.map { |p| p.url } if result.count > 1
 
-      result
+      result.map do |resource|
+        resource.url + url_extra
+      end.last
     end
   end
 end
