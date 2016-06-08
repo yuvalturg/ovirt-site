@@ -51,8 +51,10 @@ class WikiHelpers < Middleman::Extension
         redir[:to].downcase.tr('_', ' ') if exact_match || page_match
       end.compact
 
+      result = nil
+
       # Find the matching page throughout the iste
-      result = sitemap.resources.select do |resource|
+      sitemap.resources.each do |resource|
         next unless resource.data.wiki_title
 
         wiki_title = resource.data.wiki_title.to_s.downcase.strip
@@ -64,11 +66,14 @@ class WikiHelpers < Middleman::Extension
         matches ||= match_redir.include? wiki_title
 
         # Return true if it matches, else it's false
-        matches
+        if matches
+          result = resource.url + url_extra
+          break
+        end
       end
 
       # Return the URL with the extra hash
-      result.map { |resource| resource.url + url_extra }.last
+      result#.map { |resource| resource.url + url_extra }.last
     end
   end
 end
