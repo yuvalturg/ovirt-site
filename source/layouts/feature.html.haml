@@ -242,8 +242,9 @@
 
             %ul
               - related.each do |fragment|
-                %li
-                  %a{href: feature_url(fragment)}= clean_title feature_info(fragment).title
+                - if feature_info(fragment)
+                  %li
+                    %a{href: feature_url(fragment)}= clean_title feature_info(fragment).title
 
 :coffee
   $featureSidebar = $('.feature-sidebar')
